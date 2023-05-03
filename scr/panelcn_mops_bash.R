@@ -55,8 +55,11 @@ message("after write table...")
 ##### loop y con los siguientes comandos unes todos los archivos
 ##### en una sola hoja de txt
 
-setwd(args[15])
+#setwd(args[15])
 files <- list.files(pattern=".txt")
 allresults <- lapply(files, function(I)read.table(I))
 out <- do.call(rbind, allresults)
-write.table(out,"_CNVresults.txt", sep = "\t") > args[15]
+
+output_save <- paste(args[15],'/panelcnmops_CNVresults.txt', sep='')
+
+write.table(out, output_save, sep = "\t")
