@@ -1,0 +1,48 @@
+#!/bin/bash
+var1=$1
+var2=$2
+var3=$3
+var4=$4
+var5=$5
+var6=$6
+var7=$7
+var8=$8
+var9=$9
+var10=${10}
+var11=${11}
+var12=${12}
+var13=${13}
+var14=${14}
+var15=${15}
+
+#============================= Pathways extraction ============================#
+dir=$(pwd) ; dir_home=$(echo $dir | cut -d'/' -f2)
+
+# Clasificación de rutas absolutas y relativas
+pathway_val () {
+	if [ "$1" = "False" ]; then
+		var=$1
+	elif [ "$(echo $1 | cut -d'/' -f2)" != "$dir_home" ]; then #ruta relativa
+		var=$dir/$1
+	else #ruta absoluta
+		var=$1
+	fi
+}
+
+pathway_val $var1 ; var1=$var
+pathway_val $var2 ; var2=$var
+pathway_val $var3 ; var3=$var
+pathway_val $var4 ; var4=$var
+pathway_val $var5 ; var5=$var
+pathway_val $var6 ; var6=$var
+pathway_val $var7 ; var7=$var
+pathway_val $var8 ; var8=$var
+pathway_val $var9 ; var9=$var
+pathway_val $var10 ; var10=$var
+pathway_val $var11 ; var11=$var
+pathway_val $var12 ; var12=$var
+pathway_val $var13 ; var13=$var
+pathway_val $var14 ; var14=$var
+pathway_val $var15 ; var15=$var
+
+docker run -v /${dir_home}:/${dir_home} -d ambrizbiotech/germlinecnv gecopy $var1 $var2 $var3 $var4 $var5 $var6 $var7 $var8 $var9 $var10 $var11 $var12 $var13 $var14 $var15
