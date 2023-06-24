@@ -1,41 +1,38 @@
-##################################################################
-##### Instalar y cargar la librería de panelcn.mops
 library(panelcn.mops)
 args <- (commandArgs(trailingOnly = TRUE))
-#################### CARGAR ARCHIVO BED ##########################
-##### Read bedfile y countWindows
-output_final <- paste(args[15],'Panelcnmops', sep='/')
 
-bed <- args[12]
-countWindows <- getWindows(bed, chr = TRUE)
-##### Read Bamfiles - Test
-
-message(args[1])
+#============================ inputs ============================#
 BAMFiles <- list.files(args[1], patter=".bam$", full.names=TRUE)
-message(BAMFiles)
+BAMFiles_control <- list.files(args[2] ,patter=".bam$", full.names=TRUE)
+
+bed <- args[3]
+countWindows <- getWindows(bed, chr = TRUE)
+
+selectedGenes <- unlist(strsplit(args[4], split=","))
+print(selectedGenes)
+
+output_final <- paste(args[5],'Panelcnmops', sep='/')
+#================================================================#
 
 test <- countBamListInGRanges(countWindows = countWindows,
                               bam.files = BAMFiles, read.width = 150)
-##### Read Bamfiles - Control
-BAMFiles_control <- list.files(args[2] ,patter=".bam$", full.names=TRUE)
+
+
 control <- countBamListInGRanges(countWindows = countWindows,
                                  bam.files = BAMFiles_control, read.width = 150)
-#####
 panelcnmopstest <- test
 elementMetadata(panelcnmopstest) <- cbind(elementMetadata(panelcnmopstest),
                                           elementMetadata(control))
-##### Read sampleNames
 sampleNames <- colnames(elementMetadata(test))
 print(sampleNames)
-##### Select Genes
-selectedGenes <- unlist(strsplit(args[13], split=","))
-print(selectedGenes)
-##### RESULTS, con este loop te genera un archivo con terminación "CNVPJA.txt" los CNV
-##### Puedes cambiarlo al nombre de tus archivos.
-##### resultlistPJA y resulttablePJA, lo puedes cambiar de acuerdo a la teminación
-##### que tu quieras, por ejemplo resultlistGuatemala o lo puedes dejar así
-##### Porque trabaja en el loop y al fina te da los archivos txt que se ocupan
-##### en el siguiente comando
+
+
+# RESULTS, con este loop te genera un archivo con terminación "CNVPJA.txt" los CNV
+# Puedes cambiarlo al nombre de tus archivos.
+# resultlistPJA y resulttablePJA, lo puedes cambiar de acuerdo a la teminación
+# que tu quieras, por ejemplo resultlistGuatemala o lo puedes dejar así
+# Porque trabaja en el loop y al fina te da los archivos txt que se ocupan
+# en el siguiente comando
 for (i in c(1:length(BAMFiles))){
   resultlist <- runPanelcnMops(panelcnmopstest, testiv=c(i),
                                  countWindows = countWindows, selectedGenes = selectedGenes,

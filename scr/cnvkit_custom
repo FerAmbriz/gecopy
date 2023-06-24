@@ -1,60 +1,38 @@
 #!/bin/bash
-#Ask the user for the directory where the tumor bams are stored
-echo "Tumor bams directory:" $1
-#Same sequence is repeated for every variable necessary to run CNVkit
-#Normal files
-echo "Normal bams directory:"$2
-#Targets bed file
-echo "Path to your targets bed file:"$3
-#RefFlat file
-echo "Path to your refFlat.txt file (provided by the CNVkit package):" $4
-#Fasta reference file
-echo "Path to your fasta reference genome file:" $5
-#Mappable access file
-echo "Path to your mappable access file:" $6
-#CNVkit reference name and path
-echo "Where do you want me to store the CNVkit reference?:" $7
-echo "How should I name the reference?" $8
+
+tumor_bams=$1; normal_bams=$2; bed=$3
+refFlat=$4; reference=$5; mappable_acces=$6; output=$7
+
 #Output directory file
-echo "Where do you want me to store the CNVkit results files?:" $9
+#echo "Where do you want me to store the CNVkit results files?:" $9
 # ******** Parameters specific to EXOMEDEPTH ************
 # Números de más de un dígito van entre {} 
-echo "Path to the adapted bedfile to be used for the EXOME DEPTH analysis: " ${10}
-echo "Path to the directory where you want to store EXOMEDEPTH results..." ${11}
-echo "Path to the adapted bedfile to be used for the Panelcn.mops analysis:" ${12}
-echo "List the genes of interest for this analysis (separated by a ','):" ${13}
-echo "Name for Panelcn.mops results file:" ${14}
-echo "Path to the directory where you want to store Panelcn.mops results..." ${15}
-echo "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"
-
-mkdir "$9"/CNVkit
-mkdir "$9"/ExomeDepth
-mkdir "$9"/Panelcnmops
+#echo "Path to the adapted bedfile to be used for the EXOME DEPTH analysis: " ${10}
+#echo "Path to the directory where you want to store EXOMEDEPTH results..." ${11}
+#echo "Path to the adapted bedfile to be used for the Panelcn.mops analysis:" ${12}
+#echo "List the genes of interest for this analysis (separated by a ','):" ${13}
+#echo "Name for Panelcn.mops results file:" ${14}
+#echo "Path to the directory where you want to store Panelcn.mops results..." ${15}
 
 echo "----------------------------------------------------------------------"
 echo "Initializing CNVkit analysis..."
-cnvkit.py batch "$1"/*.bam --normal "$2"/*.bam \
-    --targets "$3" --annotate "$4" \
-    --fasta "$5" --access "$6" \
-    --output-reference "$9"/CNVkit/reference.cnn  --output-dir "$9"/CNVkit \
+cnvkit.py batch "$tumor_bams"/*.bam --normal "$normal_bams"/*.bam \
+    --targets "$bed" --annotate "$refFlat" \
+    --fasta "$reference" --access "$mappable_acces" \
+    --output-reference "$output"/CNVkit/reference.cnn  --output-dir "$output"/CNVkit \
     --diagram --scatter
-# ---------------------------------------------------------------------------
-# We proceed to the calling process for each sample results
 echo "-----------------------------------------------------------------------"
 echo "Initializing CNVkit calling pipeline"
-for entry in "$9"/CNVkit/*.cns
+for entry in "$output"/CNVkit/*.cns
 do
   cnvkit.py call "$entry" -o "$entry".call
 done
-# ---------------------------------------------------------------------------
-# Finally we perform the genemetrics pipeline for CNVkit
 echo "-----------------------------------------------------------------------"
 echo "Initializing CNVkit genemetrics analysis"
-for entry2 in "$9"/CNVkit/*.cnr
+for entry2 in "$output"/CNVkit/*.cnr
 do
 	cnvkit.py genemetrics "$entry2" > "$entry2".genemetrics.txt
 done
-# ---------------------------------------------------------------------------
 echo "***********************************************************************"
 echo "CNVkit analysis... DONE"
 echo "***********************************************************************"

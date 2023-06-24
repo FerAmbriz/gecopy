@@ -1,16 +1,13 @@
 library(ExomeDepth)
 library(methods)
 args <- (commandArgs(trailingOnly = TRUE))
-#El path al bedfile modificado se sustituye en este caso con el argumento número $10 de bash que se
-#señala como args[10] es decir, el número 10 en la lista de argumentos:
-arg10 <- args[10]
-print(args)
+# arg 10 ahora es el 4
 
 #==============================INPUTS=========================#
-result_files <- as.character(args[11])
+result_files <- as.character(args[5])
 result_files <- paste(result_files, 'ExomeDepth', sep = '/')
-target.file <- read.table(args[10], header = TRUE, sep = "\t") # set path to BED file
-reference.file <- args[5]
+target.file <- read.table(args[4], header = TRUE, sep = "\t") # set path to BED file
+reference.file <- args[3]
 bamFile_control <- list.files(args[2], patter=".bam$", full.names=TRUE)
 #==============================================================#
 

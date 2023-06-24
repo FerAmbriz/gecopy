@@ -1,19 +1,11 @@
 #!/bin/bash
-var1=$1
-var2=$2
-var3=$3
-var4=$4
-var5=$5
-var6=$6
-var7=$7
-var8=$8
-var9=$9
-var10=${10}
-var11=${11}
-var12=${12}
-var13=${13}
-var14=${14}
-var15=${15}
+tumor_bams=$1; normal_bams=$2; bed_cnvkit=$3
+refFlat=$4; reference=$5; mappable=$6; output=$7
+#era el 10
+bed_exomedepth=$8
+# era el 12 y 13
+bed_panelcnmops=$9
+genes_panelcnmops=${10}
 
 figlet gecopy
 #============================= Pathways extraction ============================#
@@ -30,27 +22,25 @@ pathway_val () {
 	fi
 }
 
-pathway_val $var1 ; var1=$var
-pathway_val $var2 ; var2=$var
-pathway_val $var3 ; var3=$var
-pathway_val $var4 ; var4=$var
-pathway_val $var5 ; var5=$var
-pathway_val $var6 ; var6=$var
-#pathway_val $var7 ; var7=$var
-pathway_val $var8 ; var8=$var
-pathway_val $var9 ; var9=$var
-pathway_val $var10 ; var10=$var
-pathway_val $var11 ; var11=$var
-pathway_val $var12 ; var12=$var
-pathway_val $var13 ; var13=$var
-pathway_val $var14 ; var14=$var
-pathway_val $var15 ; var15=$var
+pathway_val $tumor_bams ; tumor_bams=$var
+pathway_val $normal_bams ; normal_bams=$var
+pathway_val $bed_cnvkit ; bed_cnvkit=$var
+pathway_val $refFlat ; refFlat=$var
+pathway_val $reference ; reference=$var
+pathway_val $mappable ; mappable=$var
+pathway_val $output ; output=$var
+pathway_val $bed_exomedepth ; bed_exomedepth=$var
+pathway_val $bed_panelcnmops ; bed_panelcnmops=$var
+
+mkdir $output/CNVkit
+mkdir $output/ExomeDepth
+mkdir $output/Panelcnmops
 
 figlet cnvkit
-docker run -v /${dir_home}:/${dir_home} -it ambrizbiotech/cnvkit cnvkit_custom $var1 $var2 $var3 $var4 $var5 $var6 $var7 $var8 $var9 $var10 $var11 $var12 $var13 $var14 $var15
-figlet exomedepth
-docker run -v /${dir_home}:/${dir_home} -it ambrizbiotech/exomedepth Rscript /usr/bin/exome_depth_bash.R $var1 $var2 $var3 $var4 $var5 $var6 $var7 $var8 $var9 $var10 $var11 $var12 $var13 $var14 $var15
-figlet panelcnmops
-docker run -v /${dir_home}:/${dir_home} -it ambrizbiotech/panelcnmops Rscript /usr/bin/panelcn_mops_bash.R $var1 $var2 $var3 $var4 $var5 $var6 $var7 $var8 $var9 $var10 $var11 $var12 $var13 $var14 $var15
+docker run -v /${dir_home}:/${dir_home} -it ambrizbiotech/cnvkit cnvkit_custom $tumor_bams $normal_bams $bed_cnvkit $refFlat $reference $mappable $output
 
-echo '================== ALL DONEEEEEEE ================='
+figlet exomedepth
+docker run -v /${dir_home}:/${dir_home} -it ambrizbiotech/exomedepth Rscript /usr/bin/exome_depth_bash.R $tumor_bams $normal_bams $reference $bed_exomedepth $output
+
+figlet panelcnmops
+docker run -v /${dir_home}:/${dir_home} -it ambrizbiotech/panelcnmops Rscript /usr/bin/panelcn_mops_bash.R $tumor_bams $normal_bams $bed_panelcnmops $genes_panelcnmops $output
