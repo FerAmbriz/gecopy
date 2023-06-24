@@ -38,7 +38,7 @@ echo "Initializing CNVkit analysis..."
 cnvkit.py batch "$1"/*.bam --normal "$2"/*.bam \
     --targets "$3" --annotate "$4" \
     --fasta "$5" --access "$6" \
-    --output-reference "$7"/"$8".cnn  --output-dir "$9"/CNVkit \
+    --output-reference "$9"/CNVkit/reference.cnn  --output-dir "$9"/CNVkit \
     --diagram --scatter
 echo "CNVkit general pipeline... DONE"
 # ---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ echo "***********************************************************************"
 # ---------------------------------------------------------------------------
 echo "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"
 echo "Initializing CNV analysis with EXOME DEPTH..."
-Rscript /usr/bin/Exome_Depth_bash.R "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}"
+Rscript /usr/bin/Exome_Depth_bash.R "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}/ExomeDepth/" "${11}/ExomeDepth/"
 echo "Analysis of CNV with EXOME DEPTH... DONE"
 # ---------------------------------------------------------------------------
 echo "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"

@@ -17,9 +17,9 @@ my.refcounts <- getBamCounts(bed.frame = target.file,
                              bam.files = bamFile_control,
                              include.chr = FALSE,
                              referenceFasta = reference.file)
-output = paste(result_files, "ref_counts.txt", sep = "/")
+output_ref = paste(result_files, "ref_counts.txt", sep = "/")
 print(head(my.refcounts))
-write.table(my.refcounts, file = output)
+write.table(my.refcounts, file = output_ref)
 
 bamFile_muestra <- list.files(args[1], patter=".bam$", full.names=TRUE)
 print(head(bamFile_muestra))
@@ -35,39 +35,33 @@ my.counts <- getBamCounts(bed.frame = target.file,
 output = paste(result_files, "my_counts.txt", sep = "/")
 write.table(my.counts,file = output)
 
-my.counts.dafr <- as(my.counts[, colnames(my.counts)], 'data.frame')
 
-#my.counts.dafr$chromosome <- gsub(as.character(my.counts.dafr$space),
-#                                 pattern = 'chr',
-#                                replacement = '') ##remove the annoying chr letters
+my.counts.dafr <- read.table(output, header = TRUE)
+samplecounts.mat <- as.matrix(my.counts.dafr[, grep(names(my.counts.dafr), pattern = '*.bam')])
+nsamples <- ncol(samplecounts.mat)
 
-print(head(my.counts.dafr))
-samplecounts.mat<-as.matrix(my.counts.dafr[,grep(names(my.counts.dafr),pattern='*.bam')])
-nsamples<-ncol(samplecounts.mat)
 my.refcounts.dafr <- as(my.refcounts[, colnames(my.refcounts)], 'data.frame')
 #my.refcounts.dafr$chromosome <- gsub(as.character(my.refcounts.dafr$space),
 #                                    pattern = 'chr',
 #                                   replacement = '') ##remove the annoying chr letters
-my.ref.samples<-colnames(my.refcounts.dafr)[7:(ncol(my.refcounts.dafr)-1)]
-print(head(my.refcounts.dafr))
-print('=====================================================')
+my.ref.samples <- colnames(my.refcounts.dafr)[7:(ncol(my.refcounts.dafr))]
+
 #loop over samples in my.counts
 for (i in 1:nsamples) {{
-  my.current.samplename <-colnames(my.counts.dafr[4+i])
+  my.current.samplename <- colnames(my.counts.dafr[6+i])
   print(my.current.samplename)
   #  my.current.sample<-samplecounts.mat$my.current.sample
   my.reference.set <- as.matrix(my.refcounts.dafr[,my.ref.samples])
+
   my.choice<-select.reference.set(test.counts=samplecounts.mat[,i],
                                   reference.counts=(my.reference.set),
                                   bin.length=(my.counts.dafr$end - my.counts.dafr$start)/1000,
                                   n.bins.reduced = 10000)
-  
-  print(my.choice[[1]])
   my.matrix <- as.matrix( my.refcounts.dafr[, my.choice$reference.choice, drop = FALSE])
+
   my.reference.selected <- apply(X = my.matrix,
                                  MAR = 1,
                                  FUN = sum)
-  
   #CNV calling
   all.exons <- new('ExomeDepth',
                    test = samplecounts.mat[,i],
@@ -78,11 +72,15 @@ for (i in 1:nsamples) {{
                         transition.probability = 10^-4,
                         start = my.counts.dafr$start,
                         end = my.counts.dafr$end,
-                        chromosome = my.counts.dafr$chromosome,
-                        name = my.counts.dafr$exon)
-  
-  
-  output.file <- paste(my.current.samplename,'.exome_calls.csv',sep = ",")
+                        chromosome = my.counts.dafr$space,
+                        name = my.counts.dafr$names)
+
+
+
+
+
+  # Arreglar donde se guardan los archivos
+  output.file <- paste(my.current.samplename,'.exome_calls.csv',sep = "")
   save(all.exons,file=paste(my.current.samplename,".all.exons.txt",sep = "\t"))
   write.csv(file = output.file,
             x = all.exons@CNV.calls,
