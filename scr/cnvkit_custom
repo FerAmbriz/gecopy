@@ -31,8 +31,6 @@ mkdir "$9"/CNVkit
 mkdir "$9"/ExomeDepth
 mkdir "$9"/Panelcnmops
 
-# --------------------------------------------------------------------------
-# Then we run CNVkit with the variables inserted by the user
 echo "----------------------------------------------------------------------"
 echo "Initializing CNVkit analysis..."
 cnvkit.py batch "$1"/*.bam --normal "$2"/*.bam \
@@ -40,7 +38,6 @@ cnvkit.py batch "$1"/*.bam --normal "$2"/*.bam \
     --fasta "$5" --access "$6" \
     --output-reference "$9"/CNVkit/reference.cnn  --output-dir "$9"/CNVkit \
     --diagram --scatter
-echo "CNVkit general pipeline... DONE"
 # ---------------------------------------------------------------------------
 # We proceed to the calling process for each sample results
 echo "-----------------------------------------------------------------------"
@@ -49,7 +46,6 @@ for entry in "$9"/CNVkit/*.cns
 do
   cnvkit.py call "$entry" -o "$entry".call
 done
-echo "DONE"
 # ---------------------------------------------------------------------------
 # Finally we perform the genemetrics pipeline for CNVkit
 echo "-----------------------------------------------------------------------"
@@ -58,20 +54,7 @@ for entry2 in "$9"/CNVkit/*.cnr
 do
 	cnvkit.py genemetrics "$entry2" > "$entry2".genemetrics.txt
 done
-echo "DONE"
 # ---------------------------------------------------------------------------
 echo "***********************************************************************"
 echo "CNVkit analysis... DONE"
 echo "***********************************************************************"
-# ---------------------------------------------------------------------------
-echo "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"
-echo "Initializing CNV analysis with EXOME DEPTH..."
-Rscript /usr/bin/Exome_Depth_bash.R "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}/ExomeDepth/" "${11}/ExomeDepth/"
-echo "Analysis of CNV with EXOME DEPTH... DONE"
-# ---------------------------------------------------------------------------
-echo "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9" "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"
-echo "Initializing CNV analysis with Panelcn.mops"
-Rscript /usr/bin/panelcn_mops_bash.R "$1" "$2" "$3" "$4" "$5" "$6" "$7" "$8" "$9"/ExomeDepth "${10}" "${11}" "${12}" "${13}" "${14}" "${15}"
-
-echo "Analysis of CNV with Panelcn.mops ... DONE"
-echo "CNV analysis... COMPLETED"
