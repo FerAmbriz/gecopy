@@ -1,11 +1,40 @@
 #!/bin/bash
-tumor_bams=$1; normal_bams=$2; bed_cnvkit=$3
-refFlat=$4; reference=$5; mappable=$6; output=$7
-#era el 10
-bed_exomedepth=$8
-# era el 12 y 13
-bed_panelcnmops=$9
-genes_panelcnmops=${10}
+while [[ $# -gt 0 ]]; do
+	opt="$1"
+	shift;
+	current_arg="$1"
+	case "$opt" in
+"-h"|"--help"      ) echo '''
+gecopy version 0.0.1-beta
+Usage
+	gecopy_docker [options]
+Options
+	-i --input		Folder with BAM files
+	-o --output		Output folder location
+	-r --ref		Reference genome file
+	-n --normal		Folder with BAM files of normals
+	-c --bed-cnvkit		File with regions of interest
+	-e --bed-exomedepth File with regions of interest 
+	-p --bed-panelcnmops File with regions of interest
+	-m --mappable File with mappable regions
+	-f --refFlat File refFlat
+''';  exit 1;;
+"-i"|"--input"      ) tumor_bams="$1"; shift;;
+"-n"|"--normal"      ) normal_bams="$1"; shift;;
+"-o"|"--output"      ) output="$1"; shift;;
+"-r"|"--reference"      ) reference="$1"; shift;;
+"-c"|"--bed-cnvkit"      ) bed_cnvkit="$1"; shift;;
+"-f"|"--refFlat"      ) refFlat="$1"; shift;;
+"-m"|"--mappable"      ) mappable="$1"; shift;;
+"-e"|"--bed-exomedepth"      ) bed_exomedepth="$1"; shift;;
+"-p"|"--bed-panelcnmops"      ) bed_panelcnmops="$1"; shift;;
+"-g"|"--genes-panelcnmops"      ) genes_panelcnmops="$1"; shift;;
+	esac
+done
+
+#tumor_bams=$1; normal_bams=$2; bed_cnvkit=$3
+#refFlat=$4; reference=$5; mappable=$6; output=$7
+#bed_exomedepth=$8; bed_panelcnmops=$9; genes_panelcnmops=${10}
 
 figlet gecopy
 #============================= Pathways extraction ============================#
