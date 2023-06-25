@@ -25,10 +25,10 @@ Options
 	-r --ref		Reference genome file
 	-n --normal		Folder with BAM files of normals
 	-c --bed-cnvkit		File with regions of interest
-	-e --bed-exomedepth File with regions of interest 
-	-p --bed-panelcnmops File with regions of interest
-	-m --mappable File with mappable regions
-	-f --refFlat File refFlat
+	-e --bed-exomedepth 	File with regions of interest 
+	-p --bed-panelcnmops	File with regions of interest
+	-m --mappable 		File with mappable regions
+	-f --refFlat 		File refFlat
 ```
 ## Output
 Finally, the output will be arranged individually for each subfolder created in the output directory with the name of each copy number variation program used.
