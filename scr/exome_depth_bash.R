@@ -73,12 +73,11 @@ for (i in 1:nsamples) {
                         chromosome = my.counts.dafr$space,
                         name = my.counts.dafr$names)
 
-  print(all.exons)
-
-  # Arreglar donde se guardan los archivos
   output.file <- paste(result_files,'/', my.current.samplename, "_exome_calls.csv", sep = "")
   print(output.file)
-  save(all.exons,file=paste(result_files, '/', my.current.samplename,"_all.exons.txt",sep = ""))
+  
+  write.table(capture.output(str(all.exons)),file=paste(result_files, '/', my.current.samplename,"_all.exons.txt",sep = ""))
+
   write.csv(file = output.file,
             x = all.exons@CNV.calls,
             row.names = FALSE)
@@ -87,5 +86,6 @@ for (i in 1:nsamples) {
   if(nrow(all.exons@CNV.calls)>0){
     output.file <- paste(result_files, '/', i ,".cnv.txt", sep = "")
     print(output.file)
+    print(cbind(i,all.exons@CNV.calls))
     write.table(file = file.path(result_files,output.file),x = cbind(i,all.exons@CNV.calls),row.names = FALSE,quote=F,sep="\t") > result_files
   }
