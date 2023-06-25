@@ -3,9 +3,9 @@ gecopy is a pipeline flow that coordinates three well-known copy number variatio
 
 ## Docker images
 The copy number variant callers were individually containerized using docker for greater portability.
-* [CNVkit] (https://hub.docker.com/r/ambrizbiotech/cnvkit)
-* [ExomeDepth] (https://hub.docker.com/r/ambrizbiotech/exomedepth)
-* [Panelcn_mops] (https://hub.docker.com/r/ambrizbiotech/panelcnmops)
+* [CNVkit](https://hub.docker.com/r/ambrizbiotech/cnvkit)
+* [ExomeDepth](https://hub.docker.com/r/ambrizbiotech/exomedepth)
+* [Panelcn_mops](https://hub.docker.com/r/ambrizbiotech/panelcnmops)
 
 ## Installation
 For the installation, the only thing necessary is to have docker installed. Once installed, the automount script of the different docker containers is moved to the PATH
